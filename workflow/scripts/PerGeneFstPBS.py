@@ -12,8 +12,8 @@ import warnings
 warnings.filterwarnings('ignore') # suppress numpy runtime warnings, this is a bit dangerous, should be removed for release or resolve source of warnings
 
 # snakemake inputs and params
-metadata_path = snakemake.input['samples']
-samples = pd.read_csv(metadata_path, sep="\s+")
+metadata_path = snakemake.input['metadata']
+metadata = pd.read_csv(metadata_path, sep="\s+")
 gffpath = snakemake.input['gff']
 pbs = snakemake.params['pbs']
 pbscomps = snakemake.params['pbscomps']
@@ -51,7 +51,7 @@ for chrom in chroms:
     # function to read in vcfs and associated SNP data
     vcf, geno, acsubpops, pos, depth, snpeff, subpops, pops =  readAndFilterVcf(path=path,
                                                                chrom=chrom, 
-                                                               samples=samples,
+                                                               samples=metadata,
                                                                numbers=numbers,
                                                                ploidy=ploidy,
                                                                qualflt=30,
@@ -203,9 +203,9 @@ for chrom in chroms:
 
 
 
-fstall = pd.concat(fstbychrom.values(), ignore_index=True)
-tajdall = pd.concat(tajdbychrom.values(), ignore_index=True)
-gdivall = pd.concat(gdivbychrom.values(), ignore_index=True)
+fstall = pd.concat(fstbychrom.values(), ignore_index=True).drop_duplicates()
+tajdall = pd.concat(tajdbychrom.values(), ignore_index=True).drop_duplicates()
+gdivall = pd.concat(gdivbychrom.values(), ignore_index=True).drop_duplicates()
 
 #write to csv
 fstall.to_csv(f"results/variants/fst.tsv", index=False, sep="\t")
@@ -213,5 +213,5 @@ tajdall.to_csv(f"results/variants/TajimasD.tsv", index=False, sep="\t")
 gdivall.to_csv(f"results/variants/SequenceDiv.tsv", index=False, sep="\t")
 
 if pbs is True:
-    pbsall = pd.concat(pbsbychrom.values(), ignore_index=True)
+    pbsall = pd.concat(pbsbychrom.values(), ignore_index=True).drop_duplicates()
     pbsall.to_csv(f"results/variants/pbs.tsv", index=False, sep="\t")
