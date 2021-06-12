@@ -1,4 +1,6 @@
 # tools.py
+import os
+os.environ["NUMEXPR_MAX_THREADS"]="270"
 import allel
 import zarr
 import numpy as np

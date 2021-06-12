@@ -188,7 +188,7 @@ rule snpEffDbDownload:
     params:
         ref=config["ref"]["snpeffdb"],
     shell:
-        "snpEff download {params.ref} 2> {log}"
+        "/home/victor/anaconda3/envs/avmal/share/snpeff-5.0-1/snpEff download {params.ref} 2> {log}"
 
 
 rule snpEff:
@@ -210,7 +210,7 @@ rule snpEff:
         prefix=lambda w, output: os.path.splitext(output[0])[0],
     shell:
         """
-        snpEff eff {params.db} -csvStats {output.csvStats} {input.calls} > {params.prefix} 2> {log}
+        /home/victor/anaconda3/envs/avmal/share/snpeff-5.0-1/snpEff eff Plasmodium_relictum -csvStats {output.csvStats} {input.calls} > {params.prefix} 2> {log}
         bgzip {params.prefix}
         """
 
